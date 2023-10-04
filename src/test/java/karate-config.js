@@ -6,7 +6,8 @@ function fn() {
   }
   var config = {
     env: env,
-    myVarName: 'someValue'
+    myVarName: 'someValue',
+    mockServerPort : Number(karate.properties['mockserver.port'])
   }
   if (env == 'dev') {
     // customize

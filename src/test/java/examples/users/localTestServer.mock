@@ -1,0 +1,25 @@
+Feature: stateful mock server
+
+  Background:
+
+    * print "started mock"
+
+  Scenario: pathMatches('/api/response') && methodIs('post')
+    * def responseStatus = 200
+    * print 'signalling'
+    * print request
+    * match request == 'hello'
+    * karate.signal(request)
+    * print 'signalled'
+
+# This a catch all scenario handles every request, that hasn't been handled before.
+  Scenario:
+    * print 'No dedicated scenario matches incoming request.'
+    * print 'With Headers:'
+    * print requestHeaders
+    * print 'With Request Parameters'
+    * print requestParams
+    * print 'And Request:'
+    * print request
+    * def responseStatus = 404
+    * def response = {status:'OK'}

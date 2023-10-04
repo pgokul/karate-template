@@ -3,44 +3,16 @@ Feature: sample karate test script
 
   Background:
     * url 'https://jsonplaceholder.typicode.com'
+    * def startmock = (mockName) => karate.start({mock:mockName,port:mockServerPort}).port
+    * def mockServerUrl = 'http://localhost:'+ startmock('localTestServer.mock') +'/api/response'
 
-  Scenario: get all users and then get the first user by id
-    Given path 'users'
-    When method get
-    Then status 200
+  Scenario: hit async api
+    * def JavaDemo = Java.type('examples.users.UsersRunner')
+    * def result = JavaDemo.makeApiCall(mockServerUrl)
+    * print "listening"
+    * listen 1500
+    * print listenResult
+    * match listenResult == 'hello'
 
-    * def first = response[0]
 
-    Given path 'users', first.id
-    When method get
-    Then status 200
-
-  Scenario: create a user and then get it by id
-    * def user =
-      """
-      {
-        "name": "Test User",
-        "username": "testuser",
-        "email": "test@user.com",
-        "address": {
-          "street": "Has No Name",
-          "suite": "Apt. 123",
-          "city": "Electri",
-          "zipcode": "54321-6789"
-        }
-      }
-      """
-
-    Given url 'https://jsonplaceholder.typicode.com/users'
-    And request user
-    When method post
-    Then status 201
-
-    * def id = response.id
-    * print 'created id is: ', id
-
-    Given path id
-    # When method get
-    # Then status 200
-    # And match response contains user
   
